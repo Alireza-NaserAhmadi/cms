@@ -82,8 +82,14 @@ function Login(props) {
           .then((res) => {
             disableLoading()
             // { data: { authToken } }
-            console.log("authToken", res)
+            const date = new Date()
+            date.setDate(date.getDate() + 1)
+            const dateOBJ = { date }
             props.login(res.data)
+            console.log("authToken", res)
+
+            localStorage.setItem("token", res.data.user.authToken)
+            localStorage.setItem("tokenExpireTime", JSON.stringify(dateOBJ))
           })
           .catch(() => {
             setStatus(
@@ -105,10 +111,12 @@ function Login(props) {
       {/* begin::Head */}
       <div className="text-center mb-10 mb-lg-20">
         <h3 className="font-size-h1">
-          <FormattedMessage id="AUTH.LOGIN.TITLE" />
+          {/* <FormattedMessage id="AUTH.LOGIN.TITLE" /> */}
+          ورود
         </h3>
         <p className="text-muted font-weight-bold">
-          Enter your username and password
+          {/* Enter your username and password */}
+          لطفا ایمیل و رمز خود را وارد کنید
         </p>
       </div>
       {/* end::Head */}
@@ -122,18 +130,17 @@ function Login(props) {
           <div className="mb-10 alert alert-custom alert-light-danger alert-dismissible">
             <div className="alert-text font-weight-bold">{formik.status}</div>
           </div>
-        ) : (
-          <div className="mb-10 alert alert-custom alert-light-info alert-dismissible">
-            <div className="alert-text ">
-              Use account <strong>admin@demo.com</strong> and password{" "}
-              <strong>demo</strong> to continue.
-            </div>
-          </div>
-        )}
+        ) : // <div className="mb-10 alert alert-custom alert-light-info alert-dismissible">
+        //   <div className="alert-text ">
+        //     Use account <strong>admin@demo.com</strong> and password{" "}
+        //     <strong>demo</strong> to continue.
+        //   </div>
+        // </div>
+        null}
 
         <div className="form-group fv-plugins-icon-container">
           <input
-            placeholder="Email"
+            placeholder="ایمیل"
             type="email"
             className={`form-control form-control-solid h-auto py-5 px-6 ${getInputClasses(
               "email"
@@ -149,7 +156,7 @@ function Login(props) {
         </div>
         <div className="form-group fv-plugins-icon-container">
           <input
-            placeholder="Password"
+            placeholder="رمز"
             type="password"
             className={`form-control form-control-solid h-auto py-5 px-6 ${getInputClasses(
               "password"
@@ -168,8 +175,10 @@ function Login(props) {
             to="/auth/forgot-password"
             className="text-dark-50 text-hover-primary my-3 mr-2"
             id="kt_login_forgot"
+            // style={{ fontFamily: "vazir" }}
           >
-            <FormattedMessage id="AUTH.GENERAL.FORGOT_BUTTON" />
+            {/* <FormattedMessage id="AUTH.GENERAL.FORGOT_BUTTON" /> */}
+            رمز فراموشی
           </Link>
           <button
             id="kt_login_signin_submit"
@@ -177,7 +186,9 @@ function Login(props) {
             disabled={formik.isSubmitting}
             className={`btn btn-primary font-weight-bold px-9 py-4 my-3`}
           >
-            <span>Sign In</span>
+            {/* <span>Sign In</span> */}
+            <span style={{ fontSize: "17px", fontWeight: "700" }}>ورود</span>
+
             {loading && <span className="ml-3 spinner spinner-white"></span>}
           </button>
         </div>

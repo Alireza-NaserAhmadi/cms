@@ -41,6 +41,12 @@
 // .example-highlight {
 //   padding: 0rem 1.5rem 1.75rem !important;
 // }
+@font-face {
+  font-family: 'vazir';
+  src: url(./fonts/vazir.ttf) format('truetype'), 
+  url(./fonts/vazir.woff) format('woff'),
+       url(./fonts/vazir.woff2) format('woff2');
+}
 
 .example-highlight > pre {
   background: none transparent !important;
@@ -108,3 +114,16 @@
 .display-block {
   display: block;
 }
+.aside-enabled .header.header-fixed{
+  left :0px !important            
+}
+.d-pos{
+  // position: fixed;
+  // padding-top: 20px;
+  // background-color: #fff;
+}
+
+.aside-fixed .wrapper{
+  padding-left: 0px !important;
+}
+
