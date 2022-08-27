@@ -1,9 +1,11 @@
 /** @format */
 
 import axios from "axios"
+import config from "../../../../config/config"
 
 // export const LOGIN_URL = `${process.env.REACT_APP_API_URL}/auth/login`
-export const LOGIN_URL = "http://192.168.60.47:8080/api/v1.0/auth/login"
+// export const LOGIN_URL = "http://192.168.43.49:8080/api/v1.0/auth/login"
+export const LOGIN_URL = config.baseUrl + "auth/login"
 export const REGISTER_URL = "api/auth/register"
 export const REQUEST_PASSWORD_URL = "api/auth/forgot-password"
 export const ME_URL = `${process.env.REACT_APP_API_URL}/auth/me`

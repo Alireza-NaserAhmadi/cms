@@ -1,0 +1,5 @@
+@font-face {
+  font-family: 'BNazanin';
+  src: url(./BNazanin.woff) format('woff'),
+       url(./BNazanin.woff2) format('woff2');
+}
