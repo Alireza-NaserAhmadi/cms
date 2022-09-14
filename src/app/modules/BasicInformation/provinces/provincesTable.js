@@ -48,8 +48,6 @@ function ProvincesTable(props) {
   const { user } = useSelector((state) => state.auth)
   const { provinces } = useSelector((state) => state.provinces.provinces)
 
-  console.log("provinces", provinces)
-
   const [open, setOpen] = React.useState(false)
   const [current, setCurrent] = React.useState({ title: "", countryId: "" })
   const [editOpen, setEditOpen] = React.useState(false)
@@ -225,14 +223,6 @@ function ProvincesTable(props) {
     },
   ]
 
-  console.log("currentttttt", current)
-
-  if (!current) {
-    console.log("!current")
-  } else {
-    console.log("current")
-  }
-
   return (
     <>
       <ToastContainer
@@ -307,7 +297,6 @@ function ProvincesTable(props) {
           initialValues={{ title: "", countryId: "" }}
           validationSchema={CustomerEditSchema}
           onSubmit={(values) => {
-            console.log("values in provices", values)
             if (!editMode) {
               createProvince(user, values)
                 .then((res) => {

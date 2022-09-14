@@ -4,6 +4,7 @@ import React, { useEffect, useMemo, useState } from "react"
 import Button from "react-bootstrap/Button"
 import Modal from "react-bootstrap/Modal"
 import { connect, shallowEqual, useSelector } from "react-redux"
+import paginationFactory from "react-bootstrap-table2-paginator"
 import { injectIntl } from "react-intl"
 import Dialog from "@material-ui/core/Dialog"
 import DialogActions from "@material-ui/core/DialogActions"
@@ -14,7 +15,7 @@ import { ToastContainer, toast } from "react-toastify"
 import { OverlayTrigger, Tooltip } from "react-bootstrap"
 import * as Yup from "yup"
 import * as townships from "./_redux/townshipsRedux"
-import { Input, Select } from "../../../../_metronic/_partials/controls"
+import { Select, Input } from "../../../../_metronic/_partials/controls"
 import { Formik, Form, Field } from "formik"
 import SVG from "react-inlinesvg"
 import {
@@ -31,9 +32,14 @@ import {
   updateTownship,
   getAllTownships,
 } from "./_redux/townshipsCrud"
+import { getAllProvinces } from "../provinces/_redux/provincesCrud"
+import TextField from "@material-ui/core/TextField"
 
 const CustomerEditSchema = Yup.object().shape({
   title: Yup.string("پر کردن فیلد الزامی است")
+    .required("پر کردن فیلد الزامی است")
+    .typeError("پر کردن فیلد الزامی است"),
+  provincId: Yup.string("پر کردن فیلد الزامی است")
     .required("پر کردن فیلد الزامی است")
     .typeError("پر کردن فیلد الزامی است"),
 })
@@ -43,22 +49,91 @@ function TownshipsTable(props) {
   const { townships } = useSelector((state) => state.townships.townships)
 
   const [open, setOpen] = React.useState(false)
-  const [current, setCurrent] = React.useState({ title: "" })
+  const [current, setCurrent] = React.useState({ title: "", provincId: "" })
   const [editOpen, setEditOpen] = React.useState(false)
   const [editMode, setEditMode] = React.useState(false)
+  const [provinces, setProvinces] = React.useState(null)
+  const [page, setPage] = React.useState(1)
+  const [limit, setLimit] = React.useState(10)
+  const [length, setLength] = React.useState(null)
+  const [hasSearched, setHasSearched] = React.useState(false)
+
+  const pagination = paginationFactory({
+    totalSize: length,
+    page,
+    sizePerPage: limit,
+    lastPageText: ">>",
+    firstPageText: "<<",
+    nextPageText: ">",
+    prePageText: "<",
+    onPageChange: (e) => {
+      const params = {
+        page: e,
+        limit,
+      }
+      getAllTownships(user, params)
+        .then(async (res) => {
+          await props.getAllTownships(res.data.data)
+          setLength(res.data.length)
+          setPage(e)
+        })
+        .catch(() => {
+          toast.error("مشکلی در ارتباط با سزور وجود دارد")
+        })
+    },
+    onSizePerPageChange: (e) => {
+      if (hasSearched) {
+        toast.error("امکان انجام این عملیات در زمان فیلتر وجود ندارد")
+        return false
+      } else if (!hasSearched) {
+        let params = null
+        if (page !== 1) {
+          setPage(1)
+          params = {
+            page: 1,
+            limit: e,
+          }
+        } else {
+          params = {
+            page,
+            limit: e,
+          }
+        }
+        getAllTownships(user, params)
+          .then(async (res) => {
+            await props.getAllTownships(res.data.data)
+            setLimit(e)
+            setLength(res.data.length)
+            // toast.dismiss(toastId.current)
+          })
+          .catch(() => {
+            // toast.dismiss(toastId.current)
+            toast.error("مشکلی در ارتباط با سزور وجود دارد")
+          })
+      }
+    },
+  })
 
   useEffect(() => {
-    getAllTownships(user).then((res) => props.getAllTownships(res.data.data))
+    getAllProvinces(user).then((res) => setProvinces(res.data.data))
+    const params = {
+      page,
+      limit,
+    }
+    getAllTownships(user, params).then((res) => {
+      props.getAllTownships(res.data.data)
+      setLength(res.data.length)
+    })
   }, [])
 
   const handleEditClose = () => {
-    setCurrent(null)
+    setCurrent({ title: "", provincId: "" })
     setEditOpen(false)
     setEditMode(false)
   }
 
   const handleClose = () => {
-    setEditOpen(false)
+    setOpen(false)
   }
 
   const handleOpen = () => {
@@ -67,9 +142,10 @@ function TownshipsTable(props) {
 
   const handleDelete = (current) => {
     setOpen(false)
-    deleteTownship(user, current.id)
+    deleteTownship(user, current.id).then((res) => {
+      getAllTownships(user).then((res) => props.getAllTownships(res.data.data))
+    })
     toast.success("شهر با موفقیت حذف شد")
-    getAllTownships(user).then((res) => props.getAllTownships(res.data.data))
   }
 
   const columns = [
@@ -154,7 +230,7 @@ function TownshipsTable(props) {
       />
       <div className="container">
         <Card>
-          <CardHeader title="لیست شهرها ">
+          <CardHeader title="لیست شهر ها  ">
             <CardHeaderToolbar>
               <button
                 type="button"
@@ -172,6 +248,7 @@ function TownshipsTable(props) {
               ? Table({
                   data: townships,
                   columns: columns,
+                  pagination: pagination,
                 })
               : null}
           </CardBody>
@@ -213,7 +290,7 @@ function TownshipsTable(props) {
         <Formik
           enableReinitialize
           validateOnBlur={true}
-          initialValues={current}
+          initialValues={{ title: "", provincId: "" }}
           validationSchema={CustomerEditSchema}
           onSubmit={(values) => {
             if (!editMode) {
@@ -224,15 +301,17 @@ function TownshipsTable(props) {
                   )
 
                   toast.success("شهر جدبد با موفقیت اضافه شد")
+                  values.title = ""
                 })
                 .catch(() => {
                   toast.error("خطایی رخ داده است")
                 })
-              setCurrent(null)
+              setCurrent({})
               setEditOpen(false)
             } else if (editMode) {
               const updateData = {
                 title: values.title,
+                ProvincId: values.provincId,
               }
               updateTownship(user, current.id, updateData)
                 .then((res) => {
@@ -241,11 +320,12 @@ function TownshipsTable(props) {
                   )
 
                   toast.success("شهر با موفقیت ویرایش شد")
+                  values.title = ""
                 })
                 .catch(() => {
                   toast.error("خطایی رخ داده است")
                 })
-              setCurrent(null)
+              setCurrent({})
               setEditOpen(false)
               setEditMode(false)
             }
@@ -261,10 +341,7 @@ function TownshipsTable(props) {
             values,
           }) => (
             <>
-              <Modal
-                show={editOpen}
-                //  onHide={handleEditClose}
-              >
+              <Modal show={editOpen} onHide={handleEditClose}>
                 <Modal.Header closeButton>
                   <Modal.Title>
                     {editMode ? "ویرایش شهر" : "افزودن شهر"}
@@ -274,19 +351,39 @@ function TownshipsTable(props) {
                   {!current ? null : (
                     <Form className="form form-label-right">
                       <div className="form-group row">
-                        <div className="col-lg-6">
+                        <div className="col-lg-6 d-flex flex-column">
                           <label htmlFor="">نام شهر</label>
-                          <Field
-                            name="title"
-                            component={Input}
-                            defaultValue={current.title}
-                            placeholder="شهر"
+                          <TextField
                             onChange={(e) =>
                               setFieldValue("title", e.target.value)
                             }
+                            id="outlined-basic"
+                            name="title"
+                            variant="outlined"
+                            defaultValue={current.title}
                           />
                           {touched.title && errors.title ? (
                             <b className="text-danger mt-1">{errors.title}</b>
+                          ) : null}
+                        </div>
+                        <div className="col-lg-6">
+                          <label>استان را انتخاب کنید</label>
+                          <Select name="provincId">
+                            <option>انتخاب کنید</option>
+                            {!provinces
+                              ? null
+                              : provinces.map((el) => {
+                                  return (
+                                    <option key={el.id} value={el.id}>
+                                      {el.title}
+                                    </option>
+                                  )
+                                })}
+                          </Select>
+                          {touched.provincId ? (
+                            <div className="text-danger">
+                              {errors.provincId}
+                            </div>
                           ) : null}
                         </div>
                       </div>
@@ -306,7 +403,6 @@ function TownshipsTable(props) {
                   <Button
                     className="btn btn-primary"
                     variant="primary"
-                    disabled={isSubmitting}
                     onClick={() => handleSubmit()}
                   >
                     ثبت

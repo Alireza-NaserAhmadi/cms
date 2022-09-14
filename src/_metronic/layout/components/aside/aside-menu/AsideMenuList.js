@@ -105,7 +105,10 @@ export function AsideMenuList({ layoutProps }) {
                   )}`}
                   aria-haspopup="true"
                 >
-                  <NavLink className="menu-link" to="/react-bootstrap/provincestable">
+                  <NavLink
+                    className="menu-link"
+                    to="/react-bootstrap/provincestable"
+                  >
                     <i className="menu-bullet menu-bullet-dot">
                       <span />
                     </i>
