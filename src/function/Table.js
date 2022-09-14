@@ -5,7 +5,7 @@ import BootstrapTable from "react-bootstrap-table-next"
 import ToolkitProvider from "react-bootstrap-table2-toolkit"
 
 const Table = (tableInfo) => {
-  const { data, columns } = tableInfo
+  const { data, columns, pagination } = tableInfo
   return (
     <>
       <ToolkitProvider keyField="id" data={data ? data : []} columns={columns}>
@@ -27,7 +27,7 @@ const Table = (tableInfo) => {
                 cellEdit: true,
               }}
               bordered={false}
-              // pagination={pagination}
+              pagination={pagination}
               {...props.baseProps}
               bootstrap4
             />

@@ -1,6 +1,6 @@
 /** @format */
 
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import { useFormik } from "formik"
 import * as Yup from "yup"
@@ -31,23 +31,26 @@ const initialValues = {
 function Login(props) {
   const { intl } = props
   const [loading, setLoading] = useState(false)
+
   const LoginSchema = Yup.object().shape({
     email: Yup.string()
-      .email("Wrong email format")
-      .min(3, "Minimum 3 symbols")
-      .max(50, "Maximum 50 symbols")
+      .email("فرمت ایمیل اشتباه است")
+      .min(3, "حداقل 3 کاراکتر باید داشته باشد")
+      .max(50, "حداکثر 50 کاراکتر باید داشته باشد")
       .required(
-        intl.formatMessage({
-          id: "AUTH.VALIDATION.REQUIRED_FIELD",
-        })
+        "این فیلد نمیتواند خالی باشد"
+        // intl.formatMessage({
+        //   id: "AUTH.VALIDATION.REQUIRED_FIELD",
+        // })
       ),
     password: Yup.string()
-      .min(3, "Minimum 3 symbols")
-      .max(50, "Maximum 50 symbols")
+      .min(3, "حداقل 3 کاراکتر باید داشته باشد")
+      .max(50, "حداکثر 50 کاراکتر باید داشته باشد")
       .required(
-        intl.formatMessage({
-          id: "AUTH.VALIDATION.REQUIRED_FIELD",
-        })
+        "این فیلد نمیتواند خالی باشد"
+        // intl.formatMessage({
+        //   id: "AUTH.VALIDATION.REQUIRED_FIELD",
+        // })
       ),
   })
 

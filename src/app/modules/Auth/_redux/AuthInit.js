@@ -41,7 +41,7 @@ function AuthInit(props) {
     if (authToken) {
       requestUser()
     } else {
-      dispatch(props.fulfillUser(undefined))
+      // dispatch(props.fulfillUser(undefined))
       setShowSplashScreen(false)
     }
     // eslint-disable-next-line

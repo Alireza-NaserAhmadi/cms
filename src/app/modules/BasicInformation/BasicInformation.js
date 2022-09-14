@@ -3,6 +3,8 @@
 import React from "react"
 import { Redirect, Switch } from "react-router-dom"
 import CountriesTable from "./countries/countriesTable"
+import ProvincesTable from "./provinces/provincesTable"
+import TownshipsTable from "./townships/townshipsTable"
 
 import { ContentRoute } from "../../../_metronic/layout"
 
@@ -16,12 +18,16 @@ export default function BasicInformation() {
       />
 
       <ContentRoute
-        path="/react-bootstrap/CountriesTable"
+        path="/react-bootstrap/Countriestable"
         component={CountriesTable}
       />
       <ContentRoute
-        path="/react-bootstrap/CountriesTable"
-        component={CountriesTable}
+        path="/react-bootstrap/provincestable"
+        component={ProvincesTable}
+      />
+      <ContentRoute
+        path="/react-bootstrap/townshipstable"
+        component={TownshipsTable}
       />
       {/* <ContentRoute
         path="/react-bootstrap/badge"

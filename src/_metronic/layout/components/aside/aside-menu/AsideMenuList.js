@@ -88,7 +88,7 @@ export function AsideMenuList({ layoutProps }) {
                 >
                   <NavLink
                     className="menu-link"
-                    to="/react-bootstrap/CountriesTable"
+                    to="/react-bootstrap/Countriestable"
                   >
                     <i className="menu-bullet menu-bullet-dot">
                       <span />
@@ -105,7 +105,7 @@ export function AsideMenuList({ layoutProps }) {
                   )}`}
                   aria-haspopup="true"
                 >
-                  <NavLink className="menu-link" to="/react-bootstrap/badge">
+                  <NavLink className="menu-link" to="/react-bootstrap/provincestable">
                     <i className="menu-bullet menu-bullet-dot">
                       <span />
                     </i>
@@ -123,7 +123,7 @@ export function AsideMenuList({ layoutProps }) {
                 >
                   <NavLink
                     className="menu-link"
-                    to="/react-bootstrap/breadcrumb"
+                    to="/react-bootstrap/townshipstable"
                   >
                     <i className="menu-bullet menu-bullet-dot">
                       <span />
