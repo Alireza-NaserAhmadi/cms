@@ -11,22 +11,18 @@ import { ContentRoute } from "../../../_metronic/layout"
 export default function BasicInformation() {
   return (
     <Switch>
-      <Redirect
-        exact={true}
-        from="/react-bootstrap"
-        to="/react-bootstrap/CountriesTable"
-      />
+      <Redirect exact={true} from="/basicinfo" to="/basicinfo/countriesTable" />
 
       <ContentRoute
-        path="/react-bootstrap/Countriestable"
+        path="/basicinfo/countriestable"
         component={CountriesTable}
       />
       <ContentRoute
-        path="/react-bootstrap/provincestable"
+        path="/basicinfo/provincestable"
         component={ProvincesTable}
       />
       <ContentRoute
-        path="/react-bootstrap/townshipstable"
+        path="/basicinfo/townshipstable"
         component={TownshipsTable}
       />
       {/* <ContentRoute
