@@ -7,6 +7,8 @@ import * as auth from "../app/modules/Auth/_redux/authRedux"
 import * as townships from "../app/modules/BasicInformation/townships/_redux/townshipsRedux"
 import * as provinces from "../app/modules/BasicInformation/provinces/_redux/provincesRedux"
 import * as country from "../app/modules/BasicInformation/countries/_redux/countriesRedux"
+import * as colors from "../app/modules/BasicInformation/colors/_redux/colorsRedux"
+import * as brands from "../app/modules/BasicInformation/brands/_redux/brandsRedux"
 import { customersSlice } from "../app/modules/ECommerce/_redux/customers/customersSlice"
 import { productsSlice } from "../app/modules/ECommerce/_redux/products/productsSlice"
 import { remarksSlice } from "../app/modules/ECommerce/_redux/remarks/remarksSlice"
@@ -17,6 +19,8 @@ export const rootReducer = combineReducers({
   country: country.reducer,
   townships: townships.reducer,
   provinces: provinces.reducer,
+  colors: colors.reducer,
+  brands: brands.reducer,
   customers: customersSlice.reducer,
   products: productsSlice.reducer,
   remarks: remarksSlice.reducer,

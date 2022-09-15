@@ -126,6 +126,32 @@ export function AsideMenuList({ layoutProps }) {
                   </NavLink>
                 </li>
                 {/*end::2 Level*/}
+                <li
+                  className={`menu-item ${getMenuItemActive(
+                    "/react-bootstrap/breadcrumb"
+                  )}`}
+                  aria-haspopup="true"
+                >
+                  <NavLink className="menu-link" to="/basicinfo/brandstable">
+                    <i className="menu-bullet menu-bullet-dot">
+                      <span />
+                    </i>
+                    <span className="menu-text">برند ها</span>
+                  </NavLink>
+                </li>
+                <li
+                  className={`menu-item ${getMenuItemActive(
+                    "/react-bootstrap/breadcrumb"
+                  )}`}
+                  aria-haspopup="true"
+                >
+                  <NavLink className="menu-link" to="/basicinfo/colorstable">
+                    <i className="menu-bullet menu-bullet-dot">
+                      <span />
+                    </i>
+                    <span className="menu-text">رنگ ها</span>
+                  </NavLink>
+                </li>
               </ul>
             </ul>
           </div>

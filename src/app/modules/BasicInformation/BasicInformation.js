@@ -5,6 +5,8 @@ import { Redirect, Switch } from "react-router-dom"
 import CountriesTable from "./countries/countriesTable"
 import ProvincesTable from "./provinces/provincesTable"
 import TownshipsTable from "./townships/townshipsTable"
+import BrandsTable from "./brands/brandsTable"
+import ColorsTable from "./colors/colorsTable"
 
 import { ContentRoute } from "../../../_metronic/layout"
 
@@ -25,6 +27,8 @@ export default function BasicInformation() {
         path="/basicinfo/townshipstable"
         component={TownshipsTable}
       />
+      <ContentRoute path="/basicinfo/brandstable" component={BrandsTable} />
+      <ContentRoute path="/basicinfo/colorstable" component={ColorsTable} />
       {/* <ContentRoute
         path="/react-bootstrap/badge"
         component={BadgeExamplesPage}

@@ -13,7 +13,7 @@ import DialogTitle from "@material-ui/core/DialogTitle"
 import { ToastContainer, toast } from "react-toastify"
 import { OverlayTrigger, Tooltip } from "react-bootstrap"
 import * as Yup from "yup"
-import * as countries from "./_redux/countriesRedux"
+import * as colors from "./_redux/colorsRedux"
 import { Input, Select } from "../../../../_metronic/_partials/controls"
 import { Formik, Form, Field } from "formik"
 import SVG from "react-inlinesvg"
@@ -26,36 +26,39 @@ import {
 import { toAbsoluteUrl, sortCaret } from "../../../../_metronic/_helpers"
 import Table from "../../../../function/Table"
 import {
-  deleteCountry,
-  createCountry,
-  updateCountry,
-  getAllCountries,
-} from "./_redux/countriesCrud"
+  deleteColor,
+  createColor,
+  updateColor,
+  getAllColors,
+} from "./_redux/colorsCrud"
 import TextField from "@material-ui/core/TextField"
 
 const CustomerEditSchema = Yup.object().shape({
   title: Yup.string("پر کردن فیلد الزامی است")
     .required("پر کردن فیلد الزامی است")
     .typeError("پر کردن فیلد الزامی است"),
+  colorCode: Yup.string("پر کردن فیلد الزامی است")
+    .required("پر کردن فیلد الزامی است")
+    .typeError("پر کردن فیلد الزامی است"),
 })
 
-function CountriesTable(props) {
+function ColorsTable(props) {
   const { user } = useSelector((state) => state.auth)
-  const { countries } = useSelector((state) => state.country.countries)
+  const { colors } = useSelector((state) => state.colors.colors)
 
   const [open, setOpen] = React.useState(false)
-  const [current, setCurrent] = React.useState({ title: "" })
+  const [current, setCurrent] = React.useState({ title: "", colorCode: "" })
   const [editOpen, setEditOpen] = React.useState(false)
   const [editMode, setEditMode] = React.useState(false)
 
   const toastId = React.useRef(null)
 
   useEffect(() => {
-    getAllCountries(user).then((res) => props.getAllCountries(res.data.data))
+    getAllColors(user).then((res) => props.getAllColors(res.data.data))
   }, [])
 
   const handleEditClose = () => {
-    setCurrent({ title: "" })
+    setCurrent({ title: "", colorCode: "" })
     setEditOpen(false)
     setEditMode(false)
   }
@@ -70,9 +73,9 @@ function CountriesTable(props) {
 
   const handleDelete = (current) => {
     setOpen(false)
-    deleteCountry(user, current.id)
-    toast.success("کشور با موفقیت حذف شد")
-    getAllCountries(user).then((res) => props.getAllCountries(res.data.data))
+    deleteColor(user, current.id)
+    toast.success("رنگ با موفقیت حذف شد")
+    getAllColors(user).then((res) => props.getAllColors(res.data.data))
   }
 
   const columns = [
@@ -85,7 +88,14 @@ function CountriesTable(props) {
     },
     {
       dataField: "title",
-      text: "کشور",
+      text: "رنگ",
+      sort: true,
+      // filter: textFilter()
+      sortCaret: sortCaret,
+    },
+    {
+      dataField: "colorCode",
+      text: "کد رنگ",
       sort: true,
       // filter: textFilter()
       sortCaret: sortCaret,
@@ -101,9 +111,7 @@ function CountriesTable(props) {
         return (
           <>
             <OverlayTrigger
-              overlay={
-                <Tooltip id="products-edit-tooltip">ویرایش کشور</Tooltip>
-              }
+              overlay={<Tooltip id="products-edit-tooltip">ویرایش رنگ</Tooltip>}
             >
               <a
                 style={{ width: 25, height: 25 }}
@@ -124,7 +132,7 @@ function CountriesTable(props) {
               </a>
             </OverlayTrigger>
             <OverlayTrigger
-              overlay={<Tooltip id="products-delete-tooltip">حذف کشور</Tooltip>}
+              overlay={<Tooltip id="products-delete-tooltip">حذف رنگ</Tooltip>}
             >
               <a
                 style={{ width: 25, height: 25 }}
@@ -159,7 +167,7 @@ function CountriesTable(props) {
       />
       <div className="container">
         <Card>
-          <CardHeader title="لیست کشورها ">
+          <CardHeader title="لیست رنگ ها ">
             <CardHeaderToolbar>
               <button
                 type="button"
@@ -168,14 +176,14 @@ function CountriesTable(props) {
                   handleOpen()
                 }}
               >
-                کشور جدید
+                رنگ جدید
               </button>
             </CardHeaderToolbar>
           </CardHeader>
           <CardBody>
-            {countries != undefined
+            {colors != undefined
               ? Table({
-                  data: countries,
+                  data: colors,
                   columns: columns,
                 })
               : null}
@@ -191,7 +199,7 @@ function CountriesTable(props) {
           aria-describedby="alert-dialog-slide-description"
         >
           <DialogTitle id="alert-dialog-slide-title">
-            {"آیا واقعا قصد حذف این کشور را دارید ؟"}
+            {"آیا واقعا قصد حذف این رنگ را دارید ؟"}
           </DialogTitle>
           <DialogContent style={{ borderBottom: "1px solid red" }}>
             <DialogContentText id="alert-dialog-slide-description"></DialogContentText>
@@ -218,41 +226,44 @@ function CountriesTable(props) {
         <Formik
           enableReinitialize
           validateOnBlur={true}
-          initialValues={{ title: "" }}
+          initialValues={{ title: "", colorCode: "" }}
           validationSchema={CustomerEditSchema}
           onSubmit={(values) => {
             if (!editMode) {
-              createCountry(user, values)
+              createColor(user, values)
                 .then((res) => {
-                  getAllCountries(user).then((res) =>
-                    props.getAllCountries(res.data.data)
+                  getAllColors(user).then((res) =>
+                    props.getAllColors(res.data.data)
                   )
 
-                  toast.success("کشور جدبد با موفقیت اضافه شد")
+                  toast.success("رنگ جدبد با موفقیت اضافه شد")
                   values.title = ""
+                  values.colorCode = ""
                 })
                 .catch(() => {
                   toast.error("خطایی رخ داده است")
                 })
-              setCurrent({ title: "" })
+              setCurrent({ title: "", colorCode: "" })
               setEditOpen(false)
             } else if (editMode) {
               const updateData = {
                 title: values.title,
+                colorCode: values.colorCode,
               }
-              updateCountry(user, current.id, updateData)
+              updateColor(user, current.id, updateData)
                 .then((res) => {
-                  getAllCountries(user).then((res) =>
-                    props.getAllCountries(res.data.data)
+                  getAllColors(user).then((res) =>
+                    props.getAllColors(res.data.data)
                   )
 
-                  toast.success("کشور با موفقیت ویرایش شد")
+                  toast.success("رنگ با موفقیت ویرایش شد")
                   values.title = ""
+                  values.colorCode = ""
                 })
                 .catch(() => {
                   toast.error("خطایی رخ داده است")
                 })
-              setCurrent({ title: "" })
+              setCurrent({ title: "", colorCode: "" })
               setEditOpen(false)
               setEditMode(false)
             }
@@ -271,7 +282,7 @@ function CountriesTable(props) {
               <Modal show={editOpen} onHide={handleEditClose}>
                 <Modal.Header closeButton>
                   <Modal.Title>
-                    {editMode ? "ویرایش کشور" : "افزودن کشور"}
+                    {editMode ? "ویرایش رنگ" : "افزودن رنگ"}
                   </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
@@ -279,7 +290,7 @@ function CountriesTable(props) {
                     <Form className="form form-label-right">
                       <div className="form-group row">
                         <div className="col-lg-6">
-                          <label htmlFor="">نام کشور</label>
+                          <label htmlFor="">رنگ</label>
                           <TextField
                             onChange={(e) =>
                               setFieldValue("title", e.target.value)
@@ -291,6 +302,23 @@ function CountriesTable(props) {
                           />
                           {touched.title && errors.title ? (
                             <b className="text-danger mt-1">{errors.title}</b>
+                          ) : null}
+                        </div>
+                        <div className="col-lg-6">
+                          <label htmlFor=""> کد رنگ (بدون #)</label>
+                          <TextField
+                            onChange={(e) =>
+                              setFieldValue("colorCode", e.target.value)
+                            }
+                            id="outlined-basic"
+                            name="colorCode"
+                            variant="outlined"
+                            defaultValue={current.colorCode}
+                          />
+                          {touched.colorCode && errors.colorCode ? (
+                            <b className="text-danger mt-1">
+                              {errors.colorCode}
+                            </b>
                           ) : null}
                         </div>
                       </div>
@@ -323,4 +351,4 @@ function CountriesTable(props) {
     </>
   )
 }
-export default injectIntl(connect(null, countries.actions)(CountriesTable))
+export default injectIntl(connect(null, colors.actions)(ColorsTable))

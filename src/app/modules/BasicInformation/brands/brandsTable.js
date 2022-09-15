@@ -13,7 +13,7 @@ import DialogTitle from "@material-ui/core/DialogTitle"
 import { ToastContainer, toast } from "react-toastify"
 import { OverlayTrigger, Tooltip } from "react-bootstrap"
 import * as Yup from "yup"
-import * as countries from "./_redux/countriesRedux"
+import * as brands from "./_redux/brandsRedux"
 import { Input, Select } from "../../../../_metronic/_partials/controls"
 import { Formik, Form, Field } from "formik"
 import SVG from "react-inlinesvg"
@@ -26,36 +26,42 @@ import {
 import { toAbsoluteUrl, sortCaret } from "../../../../_metronic/_helpers"
 import Table from "../../../../function/Table"
 import {
-  deleteCountry,
-  createCountry,
-  updateCountry,
-  getAllCountries,
-} from "./_redux/countriesCrud"
+  deleteBrand,
+  createBrand,
+  updateBrand,
+  getAllBrands,
+} from "./_redux/brandsCrud"
 import TextField from "@material-ui/core/TextField"
 
 const CustomerEditSchema = Yup.object().shape({
-  title: Yup.string("پر کردن فیلد الزامی است")
+  persianTitle: Yup.string("پر کردن فیلد الزامی است")
+    .required("پر کردن فیلد الزامی است")
+    .typeError("پر کردن فیلد الزامی است"),
+  englishTitle: Yup.string("پر کردن فیلد الزامی است")
     .required("پر کردن فیلد الزامی است")
     .typeError("پر کردن فیلد الزامی است"),
 })
 
-function CountriesTable(props) {
+function BrandsTable(props) {
   const { user } = useSelector((state) => state.auth)
-  const { countries } = useSelector((state) => state.country.countries)
+  const { brands } = useSelector((state) => state.brands.brands)
 
   const [open, setOpen] = React.useState(false)
-  const [current, setCurrent] = React.useState({ title: "" })
+  const [current, setCurrent] = React.useState({
+    persianTitle: "",
+    englishTitle: "",
+  })
   const [editOpen, setEditOpen] = React.useState(false)
   const [editMode, setEditMode] = React.useState(false)
 
   const toastId = React.useRef(null)
 
   useEffect(() => {
-    getAllCountries(user).then((res) => props.getAllCountries(res.data.data))
+    getAllBrands(user).then((res) => props.getAllBrands(res.data.data))
   }, [])
 
   const handleEditClose = () => {
-    setCurrent({ title: "" })
+    setCurrent({ persianTitle: "", englishTitle: "" })
     setEditOpen(false)
     setEditMode(false)
   }
@@ -70,9 +76,9 @@ function CountriesTable(props) {
 
   const handleDelete = (current) => {
     setOpen(false)
-    deleteCountry(user, current.id)
-    toast.success("کشور با موفقیت حذف شد")
-    getAllCountries(user).then((res) => props.getAllCountries(res.data.data))
+    deleteBrand(user, current.id)
+    toast.success("برند با موفقیت حذف شد")
+    getAllBrands(user).then((res) => props.getAllBrands(res.data.data))
   }
 
   const columns = [
@@ -84,8 +90,15 @@ function CountriesTable(props) {
       // filter: textFilter()
     },
     {
-      dataField: "title",
-      text: "کشور",
+      dataField: "persianTitle",
+      text: "برند فارسی",
+      sort: true,
+      // filter: textFilter()
+      sortCaret: sortCaret,
+    },
+    {
+      dataField: "englishTitle",
+      text: "برند انگلیسی",
       sort: true,
       // filter: textFilter()
       sortCaret: sortCaret,
@@ -102,7 +115,7 @@ function CountriesTable(props) {
           <>
             <OverlayTrigger
               overlay={
-                <Tooltip id="products-edit-tooltip">ویرایش کشور</Tooltip>
+                <Tooltip id="products-edit-tooltip">ویرایش برند</Tooltip>
               }
             >
               <a
@@ -124,7 +137,7 @@ function CountriesTable(props) {
               </a>
             </OverlayTrigger>
             <OverlayTrigger
-              overlay={<Tooltip id="products-delete-tooltip">حذف کشور</Tooltip>}
+              overlay={<Tooltip id="products-delete-tooltip">حذف برند</Tooltip>}
             >
               <a
                 style={{ width: 25, height: 25 }}
@@ -159,7 +172,7 @@ function CountriesTable(props) {
       />
       <div className="container">
         <Card>
-          <CardHeader title="لیست کشورها ">
+          <CardHeader title="لیست برند ها  ">
             <CardHeaderToolbar>
               <button
                 type="button"
@@ -168,14 +181,14 @@ function CountriesTable(props) {
                   handleOpen()
                 }}
               >
-                کشور جدید
+                برند جدید
               </button>
             </CardHeaderToolbar>
           </CardHeader>
           <CardBody>
-            {countries != undefined
+            {brands != undefined
               ? Table({
-                  data: countries,
+                  data: brands,
                   columns: columns,
                 })
               : null}
@@ -191,7 +204,7 @@ function CountriesTable(props) {
           aria-describedby="alert-dialog-slide-description"
         >
           <DialogTitle id="alert-dialog-slide-title">
-            {"آیا واقعا قصد حذف این کشور را دارید ؟"}
+            {"آیا واقعا قصد حذف این برند را دارید ؟"}
           </DialogTitle>
           <DialogContent style={{ borderBottom: "1px solid red" }}>
             <DialogContentText id="alert-dialog-slide-description"></DialogContentText>
@@ -218,41 +231,44 @@ function CountriesTable(props) {
         <Formik
           enableReinitialize
           validateOnBlur={true}
-          initialValues={{ title: "" }}
+          initialValues={{ persianTitle: "", englishTitle: "" }}
           validationSchema={CustomerEditSchema}
           onSubmit={(values) => {
             if (!editMode) {
-              createCountry(user, values)
+              createBrand(user, values)
                 .then((res) => {
-                  getAllCountries(user).then((res) =>
-                    props.getAllCountries(res.data.data)
+                  getAllBrands(user).then((res) =>
+                    props.getAllBrands(res.data.data)
                   )
 
-                  toast.success("کشور جدبد با موفقیت اضافه شد")
-                  values.title = ""
+                  toast.success("برند جدبد با موفقیت اضافه شد")
+                  values.persianTitle = ""
+                  values.englishTitle = ""
                 })
                 .catch(() => {
                   toast.error("خطایی رخ داده است")
                 })
-              setCurrent({ title: "" })
+              setCurrent({ persianTitle: "", englishTitle: "" })
               setEditOpen(false)
             } else if (editMode) {
               const updateData = {
-                title: values.title,
+                persianTitle: values.persianTitle,
+                englishTitle: values.englishTitle,
               }
-              updateCountry(user, current.id, updateData)
+              updateBrand(user, current.id, updateData)
                 .then((res) => {
-                  getAllCountries(user).then((res) =>
-                    props.getAllCountries(res.data.data)
+                  getAllBrands(user).then((res) =>
+                    props.getAllBrands(res.data.data)
                   )
 
-                  toast.success("کشور با موفقیت ویرایش شد")
-                  values.title = ""
+                  toast.success("برند با موفقیت ویرایش شد")
+                  values.persianTitle = ""
+                  values.englishTitle = ""
                 })
                 .catch(() => {
                   toast.error("خطایی رخ داده است")
                 })
-              setCurrent({ title: "" })
+              setCurrent({ persianTitle: "", englishTitle: "" })
               setEditOpen(false)
               setEditMode(false)
             }
@@ -271,7 +287,7 @@ function CountriesTable(props) {
               <Modal show={editOpen} onHide={handleEditClose}>
                 <Modal.Header closeButton>
                   <Modal.Title>
-                    {editMode ? "ویرایش کشور" : "افزودن کشور"}
+                    {editMode ? "ویرایش برند" : "افزودن برند"}
                   </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
@@ -279,18 +295,39 @@ function CountriesTable(props) {
                     <Form className="form form-label-right">
                       <div className="form-group row">
                         <div className="col-lg-6">
-                          <label htmlFor="">نام کشور</label>
+                          <label htmlFor="">نام برند فارسی</label>
                           <TextField
                             onChange={(e) =>
-                              setFieldValue("title", e.target.value)
+                              setFieldValue("persianTitle", e.target.value)
                             }
                             id="outlined-basic"
-                            name="title"
+                            name="persianTitle"
                             variant="outlined"
-                            defaultValue={current.title}
+                            defaultValue={current.persianTitle}
                           />
-                          {touched.title && errors.title ? (
-                            <b className="text-danger mt-1">{errors.title}</b>
+
+                          {touched.persianTitle && errors.persianTitle ? (
+                            <b className="text-danger mt-1">
+                              {errors.persianTitle}
+                            </b>
+                          ) : null}
+                        </div>
+                        <div className="col-lg-6">
+                          <label htmlFor="">نام برند انگلیسی</label>
+                          <TextField
+                            onChange={(e) =>
+                              setFieldValue("englishTitle", e.target.value)
+                            }
+                            id="outlined-basic"
+                            name="englishTitle"
+                            variant="outlined"
+                            defaultValue={current.englishTitle}
+                          />
+
+                          {touched.englishTitle && errors.englishTitle ? (
+                            <b className="text-danger mt-1">
+                              {errors.englishTitle}
+                            </b>
                           ) : null}
                         </div>
                       </div>
@@ -323,4 +360,4 @@ function CountriesTable(props) {
     </>
   )
 }
-export default injectIntl(connect(null, countries.actions)(CountriesTable))
+export default injectIntl(connect(null, brands.actions)(BrandsTable))
