@@ -45,7 +45,7 @@ const CustomerEditSchema = Yup.object().shape({
 })
 
 function ProvincesTable(props) {
-  const { user } = useSelector((state) => state.auth)
+  const user = useSelector((state) => state.auth)
   const { provinces } = useSelector((state) => state.provinces.provinces)
 
   const [open, setOpen] = React.useState(false)
@@ -159,6 +159,13 @@ function ProvincesTable(props) {
     {
       dataField: "title",
       text: "استان",
+      sort: true,
+      // filter: textFilter()
+      sortCaret: sortCaret,
+    },
+    {
+      dataField: "Country.title",
+      text: "کشور",
       sort: true,
       // filter: textFilter()
       sortCaret: sortCaret,

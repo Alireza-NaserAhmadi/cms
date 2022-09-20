@@ -43,7 +43,7 @@ const CustomerEditSchema = Yup.object().shape({
 })
 
 function BrandsTable(props) {
-  const { user } = useSelector((state) => state.auth)
+  const user = useSelector((state) => state.auth)
   const { brands } = useSelector((state) => state.brands.brands)
 
   const [open, setOpen] = React.useState(false)

@@ -25,7 +25,7 @@ export const reducer = persistReducer(
     switch (action.type) {
       case actionTypes.Login: {
         console.log("payload in redux", action.payload)
-        const authToken = action.payload.authToken.user.authToken
+        const authToken = action?.payload?.authToken?.authToken
         console.log("authToken in redux", authToken)
         const { user } = action.payload.authToken
         console.log("user in redux", user)

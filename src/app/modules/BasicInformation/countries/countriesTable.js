@@ -40,7 +40,8 @@ const CustomerEditSchema = Yup.object().shape({
 })
 
 function CountriesTable(props) {
-  const { user } = useSelector((state) => state.auth)
+  const user = useSelector((state) => state.auth)
+  console.log("sadrarsl", user)
   const { countries } = useSelector((state) => state.country.countries)
 
   const [open, setOpen] = React.useState(false)

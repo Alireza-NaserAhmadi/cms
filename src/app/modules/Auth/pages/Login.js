@@ -92,6 +92,7 @@ function Login(props) {
             console.log("authToken", res)
 
             localStorage.setItem("token", res.data.user.authToken)
+            localStorage.setItem("user", JSON.stringify(res.data.user))
             localStorage.setItem("tokenExpireTime", JSON.stringify(dateOBJ))
           })
           .catch(() => {
@@ -186,12 +187,11 @@ function Login(props) {
           <button
             id="kt_login_signin_submit"
             type="submit"
-            disabled={formik.isSubmitting}
+            // disabled={formik.isSubmitting}
             className={`btn btn-primary font-weight-bold px-9 py-4 my-3`}
           >
             {/* <span>Sign In</span> */}
             <span style={{ fontSize: "17px", fontWeight: "700" }}>ورود</span>
-
             {loading && <span className="ml-3 spinner spinner-white"></span>}
           </button>
         </div>

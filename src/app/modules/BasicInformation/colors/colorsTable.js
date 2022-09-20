@@ -43,7 +43,7 @@ const CustomerEditSchema = Yup.object().shape({
 })
 
 function ColorsTable(props) {
-  const { user } = useSelector((state) => state.auth)
+  const user = useSelector((state) => state.auth)
   const { colors } = useSelector((state) => state.colors.colors)
 
   const [open, setOpen] = React.useState(false)

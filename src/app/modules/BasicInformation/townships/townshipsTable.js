@@ -45,7 +45,7 @@ const CustomerEditSchema = Yup.object().shape({
 })
 
 function TownshipsTable(props) {
-  const { user } = useSelector((state) => state.auth)
+  const user = useSelector((state) => state.auth)
   const { townships } = useSelector((state) => state.townships.townships)
 
   const [open, setOpen] = React.useState(false)
@@ -159,6 +159,13 @@ function TownshipsTable(props) {
     {
       dataField: "title",
       text: "شهر",
+      sort: true,
+      // filter: textFilter()
+      sortCaret: sortCaret,
+    },
+    {
+      dataField: "Province.title",
+      text: "استان",
       sort: true,
       // filter: textFilter()
       sortCaret: sortCaret,
